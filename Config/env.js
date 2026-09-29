@@ -9,4 +9,4 @@ module.exports = {
   jwtSecret: process.env.JWT_SECRET || '3423124434009890054',
   adminEmail: process.env.ADMIN_EMAIL || 'admin@carrental.local',
   adminPassword: process.env.ADMIN_PASSWORD || 'Access231@#?',
-};
+}

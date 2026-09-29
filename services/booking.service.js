@@ -1,5 +1,5 @@
 const { Booking } = require('../Models/BookingModel');
-const { AppError } = require('../utils/appError');
+const { AppError } = require('../Utils/appError');
 
 async function markOverdueBookings() {
   await Booking.updateMany(
