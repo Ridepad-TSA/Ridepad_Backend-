@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 
-const { User } = require('../Models/UserModel');
+const User = require('../Models/UserModel');
 const { AppError } = require('../Utils/appError');
 const { signToken } = require('../utils/jwt');
 
