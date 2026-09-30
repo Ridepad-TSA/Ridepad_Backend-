@@ -22,6 +22,7 @@ async function seedAdmin() {
     await User.create({
         name: "System Administrator",
         email: adminEmail,
+        phone: "00000000000",
         passwordHash,
         role: "admin"
     });
