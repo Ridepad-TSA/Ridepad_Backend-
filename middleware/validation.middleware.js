@@ -1,20 +1,53 @@
 const { AppError } = require('../Utils/appError');
 
 function validateRegistration(request, _response, next) {
-  const { name, email, password } = request.body;
+  const { name, email, password, phone } = request.body;
 
-  if (typeof name !== 'string' || name.trim().length < 2) {
-    return next(new AppError(400, 'name must contain at least 2 characters'));
+  if (!name || !email || !password || !phone) {
+    return next(
+      new AppError(
+        400,
+        'name, email, password and phone are required'
+      )
+    );
   }
-  if (typeof email !== 'string' || !/^\S+@\S+\.\S+$/.test(email)) {
-    return next(new AppError(400, 'email must be valid'));
+
+  if (typeof name !== 'string') {
+    return next(
+      new AppError(400, 'name must be a string')
+    );
   }
-  if (typeof password !== 'string' || password.length < 8) {
-    return next(new AppError(400, 'password must contain at least 8 characters'));
+
+  if (typeof email !== 'string') {
+    return next(
+      new AppError(400, 'email must be a string')
+    );
+  }
+
+  if (typeof password !== 'string') {
+    return next(
+      new AppError(400, 'password must be a string')
+    );
+  }
+
+  if (password.length < 8) {
+    return next(
+      new AppError(
+        400,
+        'Password must be at least 8 characters'
+      )
+    );
+  }
+
+  if (typeof phone !== 'string') {
+    return next(
+      new AppError(400, 'phone must be a string')
+    );
   }
 
   return next();
 }
+
 
 function validateCar(request, _response, next) {
   const { make, model, year, pricePerDay } = request.body;

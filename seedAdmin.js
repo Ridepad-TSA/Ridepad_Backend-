@@ -1,16 +1,19 @@
-
 const bcrypt = require("bcryptjs");
 
 const { adminEmail, adminPassword } = require("./config/env");
-const User = require("./Models/UserModel");
+const { User } = require("./Models/UserModel");
 
 async function seedAdmin() {
+
+    console.log("User model:", User);
+    console.log("User.findOne:", User.findOne);
+
     const existingAdmin = await User.findOne({
         role: "admin"
     });
 
     if (existingAdmin) {
-        console.log("Admin account already exists");
+        console.log("Admin user already exists");
         return;
     }
 
@@ -21,12 +24,15 @@ async function seedAdmin() {
 
     await User.create({
         name: "System Administrator",
-        email: adminEmail,
+        email: adminEmail.toLowerCase().trim(),
         passwordHash,
+        phone: "0000000000",
         role: "admin"
     });
 
-    console.log(`Admin account seeded for ${adminEmail}`);
+    console.log("Admin user created successfully");
 }
 
-module.exports = { seedAdmin };
+module.exports = {
+    seedAdmin
+};

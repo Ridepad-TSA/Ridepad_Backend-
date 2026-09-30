@@ -1,6 +1,6 @@
 
 const bcrypt = require("bcrypt");
-const User = require("../Models/UserModel");
+const { User } = require("../Models/UserModel");
 const jwt = require("jsonwebtoken")
 const crypto = require("crypto");
 const sendResetEmail = require("../services/emailSender");
@@ -78,7 +78,7 @@ exports.loginUser = async (req,res) =>{
         }
        const matchingPassword = await bcrypt.compare(password,user.password);
        if(!matchingPassword){
-        return res.status(401).json({message:"Invalid email orpassword"});
+        return res.status(401).json({message:"Invalid email or password"});
 
        }
        const secret = process.env.JWT_SECRET;

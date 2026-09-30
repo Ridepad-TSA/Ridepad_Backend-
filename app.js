@@ -17,7 +17,9 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
-app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
+app.use('/uploads', 
+         express.static(path.resolve(process.cwd(), 'uploads'))
+        );
 
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
