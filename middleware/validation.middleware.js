@@ -84,7 +84,7 @@ function validateCarUpdate(request, _response, next) {
 }
 
 function validateBooking(request, _response, next) {
-  const { carId, pickupDate, returnDate } = request.body;
+  const { carId, pickupDate, returnDate } = request.body || {};
 
   if (typeof carId !== 'string' || !carId.trim()) {
     return next(new AppError(400, 'carId is required'));

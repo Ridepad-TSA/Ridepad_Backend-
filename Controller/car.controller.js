@@ -5,7 +5,7 @@ const Car = require('../Models/CarModel');
 const { AppError } = require('../Utils/appError');
 const { ensureValidDateRange, parseRentalDate } = require('../Utils/date');
 
-const blockingBookingStatuses = ['pending', 'confirmed', 'overdue', 'active', 'pickedup'];
+const blockingBookingStatuses = ['requested', 'picked_up', 'overdue'];
 const allowedUpdateFields = [
   'make', 'model', 'category', 'year', 'licenceNumber', 'transmission', 'fuelType',
   'pricePerDay', 'seats', 'location', 'description',
@@ -112,8 +112,8 @@ async function listCars(request, response, next) {
       const returnDate = parseRentalDate(availableTo, 'availableTo');
       ensureValidDateRange(pickupDate, returnDate);
       const unavailable = await Booking.find({
-        bookingStatus: { $in: blockingBookingStatuses },
-        pickUpDate: { $lt: returnDate },
+        status: { $in: blockingBookingStatuses },
+        pickupDate: { $lt: returnDate },
         returnDate: { $gt: pickupDate },
       }).distinct('car');
       const unavailableIds = new Set(unavailable.map((id) => id.toString()));
