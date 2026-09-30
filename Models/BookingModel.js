@@ -2,58 +2,55 @@ const mongoose = require("mongoose");
 
 
 const bookingSchema = new mongoose.Schema({
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'User',
+  },
+  car: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true,
+    ref: 'Car',
+  },
+  pickupDate: {
+    type: Date,
+    required: true,
+  },
+  returnDate: {
+    type: Date,
+    required: true,
+  },
+  rentalDays: {
+    type: Number,
+    required: true,
+    min: 1,
+  },
+  pricePerDay: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
+  totalPrice: {
+    type: Number,
+    required: true,
+    min: 0,
+  },
+  status: {
+    type: String,
+    enum: ['requested', 'confirmed', 'rejected', 'picked_up', 'overdue', 'returned', 'cancelled'],
+    default: 'requested',
+  },
+  confirmedAt: Date,
+  rejectedAt: Date,
+  pickedUpAt: Date,
+  returnedAt: Date,
+  cancelledAt: Date,
+  overdueAt: Date,
+}, { timestamps: true });
 
-    user:{
-        type:mongoose.Schema.Types.ObjectId,
-        required:true,
-        ref:"User"
-    },
-
-    car:{
-        type:mongoose.Schema.Types.ObjectId,
-        required:true,
-        ref:"Car",
-    },
-    pickUpDate:{
-        type:Date,
-        required:true,
-    },
-    returnDate:{
-        type:Date,
-        required:true
-    },
-    pricePerDay:{
-        type:Number,
-        required:true
-    },
-
-    bookingStatus:{
-        type:String,
-        enum:["pending","confirmed","overdue","active","returned","pickedup","cancelled"],
-        default:"pending"
-    },
-    rentalDays:{
-        type:Number,
-        required:true
-    },
-
-    pickUpAt:{
-        type:Date,
-    },
-    returnedAt:{
-        type:Date,
-    },
-    cancelledAt:{
-        type:Date,
-    },
-    overdueAt:{
-        type:Date,
-    }
-
-},
-{timestamps:true}//created and update at
-
-);
+bookingSchema.index({ user: 1, createdAt: -1 });
+bookingSchema.index({ car: 1, pickupDate: 1, returnDate: 1 });
+bookingSchema.index({ status: 1, returnDate: 1 });
 
 const Booking = mongoose.model("Booking",bookingSchema);
 module.exports = Booking;

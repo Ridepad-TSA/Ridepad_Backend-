@@ -1,7 +1,7 @@
 
 const bcrypt = require("bcryptjs");
 
-const { adminEmail, adminPassword } = require("./config/env");
+const { adminEmail, adminPassword } = require("./Config/env");
 const User = require("./Models/UserModel");
 
 async function seedAdmin() {
@@ -22,6 +22,7 @@ async function seedAdmin() {
     await User.create({
         name: "System Administrator",
         email: adminEmail,
+        phone: "00000000000",
         passwordHash,
         role: "admin"
     });

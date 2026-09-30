@@ -1,6 +1,7 @@
 const fs = require('node:fs');
 const path = require('node:path');
 const multer = require('multer');
+const { AppError } = require('../Utils/appError');
 
 const uploadDirectory = path.resolve(process.cwd(), 'uploads');
 fs.mkdirSync(uploadDirectory, { recursive: true });
@@ -17,7 +18,10 @@ const carImagesUpload = multer({
   storage,
   limits: { fileSize: 5 * 1024 * 1024, files: 10 },
   fileFilter: (_request, file, callback) => {
-    callback(null, file.mimetype.startsWith('image/'));
+    if (!file.mimetype.startsWith('image/')) {
+      return callback(new AppError(400, 'Only image files are allowed'));
+    }
+    return callback(null, true);
   },
 });
 
