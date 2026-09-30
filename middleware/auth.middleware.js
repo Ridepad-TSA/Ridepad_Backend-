@@ -1,5 +1,5 @@
 const { AppError } = require('../Utils/appError');
-const { verifyToken } = require('../utils/jwt');
+const { verifyToken } = require('../Utils/jwt');
 
 function authenticate(request, _response, next) {
   const header = request.headers.authorization;

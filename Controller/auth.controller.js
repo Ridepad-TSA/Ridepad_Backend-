@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 
 const User = require('../Models/UserModel');
 const { AppError } = require('../Utils/appError');
-const { signToken } = require('../utils/jwt');
+const { signToken } = require('../Utils/jwt');
 
 async function register(request, response, next) {
   try {
