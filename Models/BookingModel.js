@@ -37,9 +37,11 @@ const bookingSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ['requested', 'picked_up', 'overdue', 'returned', 'cancelled'],
+    enum: ['requested', 'confirmed', 'rejected', 'picked_up', 'overdue', 'returned', 'cancelled'],
     default: 'requested',
   },
+  confirmedAt: Date,
+  rejectedAt: Date,
   pickedUpAt: Date,
   returnedAt: Date,
   cancelledAt: Date,

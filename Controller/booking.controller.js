@@ -21,7 +21,7 @@ async function createBooking(request, response, next) {
 
     const conflict = await Booking.exists({
       car: car._id,
-      status: { $in: ['requested', 'picked_up', 'overdue'] },
+      status: { $in: ['requested', 'confirmed', 'picked_up', 'overdue'] },
       pickupDate: { $lt: returnDate },
       returnDate: { $gt: pickupDate },
     });
@@ -102,13 +102,17 @@ async function updateBookingStatus(request, response, next) {
     }
 
     const { status } = request.body || {};
-    const validStatuses = ['requested', 'picked_up', 'returned', 'cancelled', 'overdue'];
+    const validStatuses = [
+      'requested', 'confirmed', 'rejected', 'picked_up', 'overdue', 'returned', 'cancelled',
+    ];
     if (!validStatuses.includes(status)) throw new AppError(400, 'Invalid booking status');
 
     const booking = await Booking.findById(request.params.id);
     if (!booking) throw new AppError(404, 'Booking not found');
     assertStatusTransition(booking.status, status);
     booking.status = status;
+    if (status === 'confirmed') booking.confirmedAt = new Date();
+    if (status === 'rejected') booking.rejectedAt = new Date();
     if (status === 'picked_up') booking.pickedUpAt = new Date();
     if (status === 'returned') booking.returnedAt = new Date();
     if (status === 'cancelled') booking.cancelledAt = new Date();

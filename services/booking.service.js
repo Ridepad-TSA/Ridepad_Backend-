@@ -17,9 +17,11 @@ async function markOverdueBookings() {
 }
 
 const allowedTransitions = {
-  requested: ['picked_up', 'cancelled'],
+  requested: ['confirmed', 'rejected', 'cancelled'],
+  confirmed: ['picked_up', 'cancelled'],
   picked_up: ['returned', 'overdue'],
   overdue: ['returned'],
+  rejected: [],
   returned: [],
   cancelled: [],
 };

@@ -5,7 +5,7 @@ const Car = require('../Models/CarModel');
 const { AppError } = require('../Utils/appError');
 const { ensureValidDateRange, parseRentalDate } = require('../Utils/date');
 
-const blockingBookingStatuses = ['requested', 'picked_up', 'overdue'];
+const blockingBookingStatuses = ['requested', 'confirmed', 'picked_up', 'overdue'];
 const allowedUpdateFields = [
   'make', 'model', 'category', 'year', 'licenceNumber', 'transmission', 'fuelType',
   'pricePerDay', 'seats', 'location', 'description',
