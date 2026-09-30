@@ -6,7 +6,7 @@ const { signToken } = require('../utils/jwt');
 
 async function register(request, response, next) {
   try {
-    const { name, email, password } = request.body;
+    const { name, email, password, phone } = request.body;
     const normalizedEmail = email.toLowerCase().trim();
 
     if (await User.exists({ email: normalizedEmail })) {
@@ -14,7 +14,7 @@ async function register(request, response, next) {
     }
 
     const passwordHash = await bcrypt.hash(password, 12);
-    const user = await User.create({ name: name.trim(), email: normalizedEmail, passwordHash });
+    const user = await User.create({ name: name.trim(), email: normalizedEmail, passwordHash, phone: phone.trim() });
     const token = signToken({ userId: user.id, email: user.email, role: user.role });
 
     return response.status(201).json({
