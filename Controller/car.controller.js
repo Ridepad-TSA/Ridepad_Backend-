@@ -72,13 +72,13 @@ function getCarUpdates(body, imageUrls) {
   return updates;
 }
 
-async function listCars(request, response, next) {
+async function listCars(request, response, next, includeInactive = false) {
   try {
     const {
       make, model, category, location, transmission, fuelType, seats,
       minPrice, maxPrice, search, availableFrom, availableTo,
     } = request.query;
-    const filter = { isActive: true };
+    const filter = includeInactive ? {} : { isActive: true };
 
     for (const [field, value] of Object.entries({ make, model, location })) {
       if (value !== undefined) filter[field] = new RegExp(escapeRegex(requireNonBlankQueryString(value, field)), 'i');
@@ -123,6 +123,10 @@ async function listCars(request, response, next) {
   } catch (error) {
     return next(validationError(error));
   }
+}
+
+function listAdminCars(request, response, next) {
+  return listCars(request, response, next, true);
 }
 
 async function getCar(request, response, next) {
@@ -198,4 +202,4 @@ async function setCarActive(request, response, next) {
   }
 }
 
-module.exports = { listCars, getCar, createCar, updateCar, setCarActive };
+module.exports = { listCars, listAdminCars, getCar, createCar, updateCar, setCarActive };

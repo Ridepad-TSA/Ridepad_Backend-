@@ -28,7 +28,12 @@ async function register(request, response, next) {
 
 async function login(request, response, next) {
   try {
-    const { email, password } = request.body;
+    const body = request.body;
+    if (!body || typeof body !== 'object' || Array.isArray(body)) {
+      throw new AppError(400, 'Request body is required');
+    }
+
+    const { email, password } = body;
     if (!email || !password) {
       throw new AppError(400, 'email and password are required');
     }
