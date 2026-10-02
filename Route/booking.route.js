@@ -3,7 +3,9 @@ const express = require('express');
 const {
   cancelBooking,
   createBooking,
+  getBookingDetails,
   listAllBookings,
+  listActiveRentals,
   listMyBookings,
   listOverdueBookings,
   updateBookingStatus,
@@ -16,9 +18,11 @@ const router = express.Router();
 router.use(authenticate);
 router.post('/', authorize('user', 'admin'), validateBooking, createBooking);
 router.get('/mine', authorize('user', 'admin'), listMyBookings);
+router.get('/overdue', authorize('admin'), listOverdueBookings);
+router.get('/active', authorize('admin'), listActiveRentals);
+router.get('/:id', authorize('user', 'admin'), getBookingDetails);
 router.patch('/:id/cancel', authorize('user', 'admin'), cancelBooking);
 router.get('/', authorize('admin'), listAllBookings);
-router.get('/overdue', authorize('admin'), listOverdueBookings);
 router.patch('/:id/status', authorize('admin'), updateBookingStatus);
 
 module.exports = router;
