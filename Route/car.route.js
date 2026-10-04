@@ -1,6 +1,6 @@
 const express = require('express');
 
-const { createCar, getCar, listCars, setCarActive, updateCar } = require('../Controller/car.controller');
+const { createCar, getCar, listAdminCars, listCars, setCarActive, updateCar } = require('../Controller/car.controller');
 const { authenticate, authorize } = require('../middleware/auth.middleware');
 const { carImagesUpload } = require('../middleware/upload.middleware');
 const { validateCar, validateCarUpdate } = require('../middleware/validation.middleware');
@@ -8,6 +8,7 @@ const { validateCar, validateCarUpdate } = require('../middleware/validation.mid
 const router = express.Router();
 
 router.get('/', listCars);
+router.get('/admin/all', authenticate, authorize('admin'), listAdminCars);
 router.get('/:id', getCar);
 router.post('/', authenticate, authorize('admin'), carImagesUpload.array('images', 10), validateCar, createCar);
 router.patch('/:id', authenticate, authorize('admin'), carImagesUpload.array('images', 10), validateCarUpdate, updateCar);

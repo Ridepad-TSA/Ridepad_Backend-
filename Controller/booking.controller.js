@@ -55,6 +55,26 @@ async function listMyBookings(request, response, next) {
   }
 }
 
+async function getBookingDetails(request, response, next) {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(request.params.id)) {
+      throw new AppError(400, 'Invalid booking id');
+    }
+
+    const query = { _id: request.params.id };
+    if (request.user.role !== 'admin') query.user = request.user.userId;
+
+    const booking = await Booking.findOne(query)
+      .populate('car', 'make model category year licenceNumber transmission fuelType pricePerDay seats location description images isActive')
+      .populate('user', 'name email phone');
+
+    if (!booking) throw new AppError(404, 'Booking not found');
+    return response.json(booking);
+  } catch (error) {
+    return next(error);
+  }
+}
+
 async function listAllBookings(_request, response, next) {
   try {
     await markOverdueBookings();
@@ -69,6 +89,19 @@ async function listOverdueBookings(_request, response, next) {
   try {
     await markOverdueBookings();
     return response.json(await Booking.find({ status: 'overdue' }).populate('user', 'name email').populate('car'));
+  } catch (error) {
+    return next(error);
+  }
+}
+
+async function listActiveRentals(_request, response, next) {
+  try {
+    await markOverdueBookings();
+    const bookings = await Booking.find({ status: { $in: ['picked_up', 'overdue'] } })
+      .populate('car', 'make model category year licenceNumber transmission fuelType pricePerDay seats location description images isActive')
+      .populate('user', 'name email phone')
+      .sort({ createdAt: -1 });
+    return response.json(bookings);
   } catch (error) {
     return next(error);
   }
@@ -126,9 +159,11 @@ async function updateBookingStatus(request, response, next) {
 
 module.exports = {
   createBooking,
+  getBookingDetails,
   listMyBookings,
   listAllBookings,
   listOverdueBookings,
+  listActiveRentals,
   cancelBooking,
   updateBookingStatus,
 };
