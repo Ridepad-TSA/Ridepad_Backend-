@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const cloudinary = require('../Config/cloudinary');
 
 const Booking = require('../Models/BookingModel');
 const Car = require('../Models/CarModel');
@@ -11,8 +12,25 @@ const allowedUpdateFields = [
   'pricePerDay', 'seats', 'location', 'description',
 ];
 
-function uploadedImageUrls(request) {
-  return (request.files || []).map((file) => `/uploads/${file.filename}`);
+async function uploadImages(request) {
+  const files = request.files || [];
+
+  return Promise.all(
+    files.map(
+      (file) =>
+        new Promise((resolve, reject) => {
+          const stream = cloudinary.uploader.upload_stream(
+            { folder: 'car-rentals' },
+            (error, result) => {
+              if (error) return reject(error);
+              resolve(result.secure_url);
+            }
+          );
+
+          stream.end(file.buffer);
+        })
+    )
+  );
 }
 
 function escapeRegex(value) {
@@ -155,7 +173,7 @@ async function createCar(request, response, next) {
       seats: Number(body.seats),
       location: body.location,
       description: body.description,
-      images: uploadedImageUrls(request),
+      images: await uploadImages(request),
     });
     return response.status(201).json(car);
   } catch (error) {
@@ -166,7 +184,8 @@ async function createCar(request, response, next) {
 async function updateCar(request, response, next) {
   try {
     validateCarId(request.params.id);
-    const updates = getCarUpdates(request.body || {}, uploadedImageUrls(request));
+    const imageUrls = await uploadImages(request);
+    const updates = getCarUpdates(request.body || {}, imageUrls);
     if (!Object.keys(updates).length) throw new AppError(400, 'At least one car field is required');
     const car = await Car.findByIdAndUpdate(request.params.id, updates, {
       new: true,
