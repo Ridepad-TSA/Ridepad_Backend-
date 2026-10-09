@@ -13,14 +13,18 @@ const healthRoutes = require('./Route/healthRoute');
 const app = express();
 
 app.use(helmet());
+
 const allowedOrigins = [
-  "https://ridepad-frontend.vercel.app",
-  "https://ridepad-frontend-h8w4vx10c-daniel-team21.vercel.app"
+"http://localhost:3000",
+"https://ridepad-frontend.vercel.app",
+"https://ridepad-frontend-h8w4vx10c-daniel-team21.vercel.app"
 ];
 
 app.use(cors({
-  origin: allowedOrigins
+origin: allowedOrigins,
+credentials: true
 }));
+
 
 app.use(express.json());
 app.use(morgan('dev'));
