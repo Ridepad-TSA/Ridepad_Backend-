@@ -2,7 +2,6 @@ const cors = require('cors');
 const express = require('express');
 const helmet = require('helmet');
 const morgan = require('morgan');
-const path = require('node:path');
 
 const { errorHandler } = require('./middleware/errorHandler');
 const { notFound } = require('./middleware/notFound');
@@ -14,10 +13,21 @@ const healthRoutes = require('./Route/healthRoute');
 const app = express();
 
 app.use(helmet());
-app.use(cors());
+
+const allowedOrigins = [
+"http://localhost:3000",
+"https://ridepad-frontend.vercel.app",
+"https://ridepad-frontend-h8w4vx10c-daniel-team21.vercel.app"
+];
+
+app.use(cors({
+origin: allowedOrigins,
+credentials: true
+}));
+
+
 app.use(express.json());
 app.use(morgan('dev'));
-app.use('/uploads', express.static(path.resolve(process.cwd(), 'uploads')));
 
 app.use('/api/health', healthRoutes);
 app.use('/api/auth', authRoutes);
